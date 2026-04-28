@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automated Investment Insights Bot</title>
+    <meta name="description" content="AI-powered automated investment insights and smart portfolio management.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2><span>AI</span> Invest</h2>
+            </div>
+            
+            <div class="user-profile">
+                <h3>👤 User Profile</h3>
+                <div class="form-group">
+                    <label for="userName">Name</label>
+                    <input type="text" id="userName" placeholder="Enter your name" value="Investor">
+                </div>
+                <div class="form-group">
+                    <label for="userAge">Age: <span id="ageValue">30</span></label>
+                    <input type="range" id="userAge" min="18" max="100" value="30" oninput="document.getElementById('ageValue').innerText = this.value">
+                </div>
+            </div>
+
+            <div class="investment-preferences">
+                <h3>🎯 Preferences</h3>
+                <div class="form-group">
+                    <label for="userGoal">Goal</label>
+                    <select id="userGoal">
+                        <option value="wealth">Wealth</option>
+                        <option value="retirement">Retirement</option>
+                        <option value="short-term">Short-term</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="userRisk">Risk</label>
+                    <select id="userRisk">
+                        <option value="low">Low</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="high">High</option>
+                    </select>
+                </div>
+                <button id="getAdviceBtn" class="primary-btn">Get Advice</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header>
+                <h1>Automated Investment Insights Bot</h1>
+                <p>Suggests smart investments based on your financial goals</p>
+            </header>
+
+            <div class="dashboard-grid">
+                
+                <!-- Advice Section -->
+                <section class="card glass-card advice-card">
+                    <h3>💡 Personalized Advice</h3>
+                    <div id="adviceResult" class="result-box">
+                        <p class="placeholder-text">Set your preferences and click 'Get Advice' to see insights.</p>
+                    </div>
+                </section>
+
+                <!-- Portfolio Section -->
+                <section class="card glass-card portfolio-card">
+                    <h3>📊 Portfolio Allocation</h3>
+                    <div class="chart-container">
+                        <canvas id="portfolioChart"></canvas>
+                    </div>
+                </section>
+
+                <!-- TradingView Market Overview -->
+                <section class="card glass-card full-width-card">
+                    <h3>📈 Live Market Overview</h3>
+                    <div class="tradingview-widget-container" style="height: 400px; width: 100%;">
+                        <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%;"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js" async>
+                        {
+                        "colorTheme": "dark",
+                        "dateRange": "1M",
+                        "showChart": true,
+                        "locale": "en",
+                        "width": "100%",
+                        "height": "100%",
+                        "largeChartUrl": "",
+                        "isTransparent": true,
+                        "showSymbolLogo": true,
+                        "showFloatingTooltip": false,
+                        "tabs": [
+                            {
+                            "title": "Equities",
+                            "symbols": [
+                                { "s": "NASDAQ:AAPL", "d": "Apple" },
+                                { "s": "NASDAQ:TSLA", "d": "Tesla" },
+                                { "s": "NASDAQ:NVDA", "d": "NVIDIA" },
+                                { "s": "NASDAQ:MSFT", "d": "Microsoft" },
+                                { "s": "NASDAQ:AMZN", "d": "Amazon" }
+                            ],
+                            "originalTitle": "Equities"
+                            },
+                            {
+                            "title": "Crypto",
+                            "symbols": [
+                                { "s": "BINANCE:BTCUSDT", "d": "Bitcoin" },
+                                { "s": "BINANCE:ETHUSDT", "d": "Ethereum" },
+                                { "s": "BINANCE:SOLUSDT", "d": "Solana" }
+                            ],
+                            "originalTitle": "Crypto"
+                            }
+                        ]
+                        }
+                        </script>
+                    </div>
+                </section>
+
+                <!-- TradingView Advanced Chart -->
+                <section class="card glass-card full-width-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 style="margin-bottom: 0;">📊 Advanced Live Chart</h3>
+                        <div class="stock-input-group" style="width: 250px;">
+                            <input type="text" id="liveChartSymbol" placeholder="e.g. TSLA, MSFT">
+                            <button id="updateLiveChartBtn" class="secondary-btn" style="padding: 0.5rem 1rem; width: auto;">Load</button>
+                        </div>
+                    </div>
+                    <div id="advancedChartContainer" class="tradingview-widget-container" style="height: 400px; width: 100%;">
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Floating Chat Widget -->
+    <div class="chat-widget">
+        <button id="chatToggle" class="chat-toggle-btn">
+            💬 AI Advisor
+        </button>
+        <div id="chatBox" class="chat-box hidden">
+            <div class="chat-header">
+                <h3>AI Investment Chatbot</h3>
+                <div class="header-actions">
+                    <button id="settingsToggle" class="icon-btn-small" title="Settings">⚙️</button>
+                    <button id="chatClose" class="close-btn">&times;</button>
+                </div>
+            </div>
+            
+            <!-- Settings Panel -->
+            <div id="settingsPanel" class="settings-panel hidden">
+                <label for="apiKeyInput" style="font-size: 0.8rem; color: var(--text-muted);">Groq API Key (Stored Locally)</label>
+                <input type="password" id="apiKeyInput" placeholder="gsk_..." class="api-input">
+                <button id="saveApiBtn" class="primary-btn mt-3" style="padding: 0.5rem; font-size: 0.9rem;">Save Key</button>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot">
+                    <p>Hello! I'm your AI financial advisor. How can I help you today?</p>
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="Ask about investments...">
+                <button id="chatSendBtn" class="icon-btn">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/script.js"></script>
+</body>
+</html>
